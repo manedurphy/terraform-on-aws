@@ -233,3 +233,20 @@ resource "aws_instance" "my_ec2" {
     - We can also use the datasource from another Terraform project
 
 # Loops, MetaArgumnets, Splat Operator & Functions
+
+1. Loops
+    - We can loop through an output when using `count` as a meta-argument in our EC2 launch
+
+```terraform
+output "for_output_list" {
+  description = "For Loop with List"
+  value       = [for instance in aws_instance.myec2vm : instance.public_dns]
+}
+```
+
+```
+for_output_list = [
+  "ec2-3-82-196-7.compute-1.amazonaws.com",
+  "ec2-3-83-45-236.compute-1.amazonaws.com",
+]
+```
