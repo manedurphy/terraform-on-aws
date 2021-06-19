@@ -232,7 +232,7 @@ resource "aws_instance" "my_ec2" {
     - We used filters to acquire the AMI we wanted, and used the id of that datasource when creating our EC2 instance
     - We can also use the datasource from another Terraform project
 
-# Loops, MetaArgumnets, Splat Operator & Functions
+# Loops, Meta-Arguments, Splat Operator & Functions
 
 1. Loops
     - We can loop through an output when using `count` as a meta-argument in our EC2 launch. We can loop through lists and maps.
@@ -278,7 +278,7 @@ for_output_map2 = {
 ```
 
 ```terraform
-# For loop with splat opertator
+# For loop with splat opertator -> not supported with for_each
 output "latest_splat_instance_publicdns" {
   description = "Generalized latest Splat Operator"
   value       = aws_instance.myec2vm[*].public_dns
