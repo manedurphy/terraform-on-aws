@@ -18,7 +18,9 @@ terraform apply --auto-approve
 terraform destroy --auto-approve
 ```
 
-## Language Basics
+## Language Basics & Configuration Syntax
+
+### Top Level Blocks
 
 ```terraform
 # Block-1: Terraform Settings Block
@@ -128,3 +130,11 @@ module "ec2_cluster" {
 }
 #####################################################################
 ```
+
+1. Fundamental Blocks - Terraform, Provider, Resources
+2. Variables Blocks - Input, Output, Local values
+3. Referencing Blocks - Data Sources, Modules
+
+# Blocks
+
+## Fundamental Block
