@@ -137,4 +137,28 @@ module "ec2_cluster" {
 
 # Blocks
 
-## Fundamental Block
+## Fundamental/Basic Blocks
+
+1. Terraform Block
+    - Required Terraform version
+    - List of required providers
+    - Terraform backend for remote storage of state
+
+```terraform
+terraform {
+  required_version = ">= 0.14" # At least version 0.14
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "3.46.0"
+    }
+  }
+}
+
+```
+
+2. Provider Block
+    - The "heart" of Terraform -> determines the Cloud providers of choice
+    - Provider configuration belongs to root module
+3. Resouce Block
+    - Defines the infrastructure objects that will provision resources on the Cloud provider
