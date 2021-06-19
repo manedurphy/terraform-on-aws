@@ -208,10 +208,26 @@ resource "aws_instance" "my_ec2" {
 }
 ```
 
-## Terraform State Basics
+### Terraform State Basics
 
 -   Terraform state changes based on the resource behaviors described above
 -   It is simply a database for actions to be performed
 -   `terraform.tfstate` is created when using a local backend -> it references the default workspace
 -   We can configure an S3 bucket as our backend to store and share a common `terraform.tfstate` file for a team
 -   In summary, the system is just a diff between desired state and current state. If they are equal, no changes are made.
+
+## Variables
+
+1. Input variables
+    - Serve as parameters for a Terraform module
+    - Allows us to configure the module once, and change that value of variables in one place
+    - Allows modules to be shared with different configurations
+2. Output variables
+    - Output values are like return values of a function, and Terraform has several uses for them
+    - A root module can use outputs to print output values to the console after running `terraform apply`
+    - A child module can use outputs to expose a subset of its resource attributes to the parent module
+      When using remote state, the root module outputs can be accessed by other configurations via a `terraform_remote_state data source`
+3. Datasources
+    - Datasources allow data to fetched or computed for use elsewhere is Terraform configuration
+    - We used filters to acquire the AMI we wanted, and used the id of that datasource when creating our EC2 instance
+    - We can also use the datasource from another Terraform project
