@@ -143,6 +143,7 @@ module "ec2_cluster" {
     - Required Terraform version
     - List of required providers
     - Terraform backend for remote storage of state
+    - NOTE: The Terraform block can NOT reference variables or named objects, its values must be hard-coded
 
 ```terraform
 terraform {
@@ -153,6 +154,12 @@ terraform {
       version = "3.46.0"
     }
   }
+
+  backend "s3" {
+      bucket = "backend-bucket"
+      key = "path/to/key"
+      region = "us-east-1"
+  }
 }
 
 ```
@@ -160,5 +167,22 @@ terraform {
 2. Provider Block
     - The "heart" of Terraform -> determines the Cloud providers of choice
     - Provider configuration belongs to root module
+    - On `terraform init`, the Terraform CLI will acquire the provider from the Terraform public registry
+    - The Provider simply communicates with the APIs of its respected Cloud provider
+    - Each Provider is distributed independently from Terraform, with its own versions and release cycles
+
+```terraform
+provider "aws" {
+  region = "us-east-1"
+  profile = "developer"
+}
+```
+
+```txt
+[developer]
+aws_access_key_id = Axxxx
+aws_secret_access_key = Uxxxxx
+```
+
 3. Resouce Block
     - Defines the infrastructure objects that will provision resources on the Cloud provider
