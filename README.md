@@ -236,6 +236,7 @@ resource "aws_instance" "my_ec2" {
 
 1. Loops
     - We can loop through an output when using `count` as a meta-argument in our EC2 launch. We can loop through lists and maps.
+    - The splat operator allows us to use a `*` operator, allowing us to avoid writing the for loop manually
 
 ```terraform
 output "for_output_list" {
