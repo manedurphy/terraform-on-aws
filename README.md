@@ -231,3 +231,5 @@ resource "aws_instance" "my_ec2" {
     - Datasources allow data to fetched or computed for use elsewhere is Terraform configuration
     - We used filters to acquire the AMI we wanted, and used the id of that datasource when creating our EC2 instance
     - We can also use the datasource from another Terraform project
+
+# Loops, MetaArgumnets, Splat Operator & Functions
