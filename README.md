@@ -235,7 +235,7 @@ resource "aws_instance" "my_ec2" {
 # Loops, MetaArgumnets, Splat Operator & Functions
 
 1. Loops
-    - We can loop through an output when using `count` as a meta-argument in our EC2 launch
+    - We can loop through an output when using `count` as a meta-argument in our EC2 launch. We can loop through lists and maps.
 
 ```terraform
 output "for_output_list" {
@@ -249,4 +249,26 @@ for_output_list = [
   "ec2-3-82-196-7.compute-1.amazonaws.com",
   "ec2-3-83-45-236.compute-1.amazonaws.com",
 ]
+```
+
+```terraform
+output "for_output_map1" {
+  description = "For Loop with Map"
+  value       = { for instance in aws_instance.myec2vm : instance.id => instance.public_dns }
+}
+
+output "for_output_map2" {
+  description = "For Loop with Map - Advanced"
+  value       = { for c, instance in aws_instance.myec2vm : c => instance.public_dns }
+```
+
+```
+for_output_map1 = {
+  "i-0489db1a84d7d754a" = "ec2-3-82-196-7.compute-1.amazonaws.com"
+  "i-05d8dd821eaf1d567" = "ec2-3-83-45-236.compute-1.amazonaws.com"
+}
+for_output_map2 = {
+  "0" = "ec2-3-82-196-7.compute-1.amazonaws.com"
+  "1" = "ec2-3-83-45-236.compute-1.amazonaws.com"
+}
 ```
