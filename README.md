@@ -231,3 +231,122 @@ resource "aws_instance" "my_ec2" {
     - Datasources allow data to fetched or computed for use elsewhere is Terraform configuration
     - We used filters to acquire the AMI we wanted, and used the id of that datasource when creating our EC2 instance
     - We can also use the datasource from another Terraform project
+
+# Loops, Meta-Arguments, Splat Operator & Functions
+
+-   We can loop through an output when using `count` as a meta-argument in our EC2 launch. We can loop through lists and maps.
+-   The splat operator allows us to use a `*` operator, allowing us to avoid writing the for loop manually
+
+```terraform
+EC2 Instance
+resource "aws_instance" "myec2vm" {
+  ami = data.aws_ami.amzlinux2.id
+  instance_type = var.instance_type
+  instance_type          = var.instance_type
+  user_data              = file("${path.module}/app1-install.sh")
+  key_name               = var.instance_keypair
+  vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
+  count = 2 # Count is indexed, and can be looped through in outputs
+  tags = {
+    "Name" = "Count-Demo-${count.index}"
+  }
+}
+```
+
+```terraform
+output "for_output_list" {
+  description = "For Loop with List"
+  value       = [for instance in aws_instance.myec2vm : instance.public_dns]
+}
+
+# For loop with list
+for_output_list = [
+  "ec2-3-82-196-7.compute-1.amazonaws.com",
+  "ec2-3-83-45-236.compute-1.amazonaws.com",
+]
+```
+
+```terraform
+output "for_output_map1" {
+  description = "For Loop with Map"
+  value       = { for instance in aws_instance.myec2vm : instance.id => instance.public_dns }
+}
+
+output "for_output_map2" {
+  description = "For Loop with Map - Advanced"
+  value       = { for c, instance in aws_instance.myec2vm : c => instance.public_dns }
+
+# For loop with map 1
+for_output_map1 = {
+  "i-0489db1a84d7d754a" = "ec2-3-82-196-7.compute-1.amazonaws.com"
+  "i-05d8dd821eaf1d567" = "ec2-3-83-45-236.compute-1.amazonaws.com"
+}
+
+# For loop with map 2
+for_output_map2 = {
+  "0" = "ec2-3-82-196-7.compute-1.amazonaws.com"
+  "1" = "ec2-3-83-45-236.compute-1.amazonaws.com"
+}
+```
+
+```terraform
+output "latest_splat_instance_publicdns" {
+  description = "Generalized latest Splat Operator"
+  value       = aws_instance.myec2vm[*].public_dns
+}
+
+# For loop with splat opertator -> not supported with for_each
+latest_splat_instance_publicdns = [
+  "ec2-3-82-196-7.compute-1.amazonaws.com",
+  "ec2-3-83-45-236.compute-1.amazonaws.com",
+]
+```
+
+-   We can use a combination of loops and functions to acquire the availability zones that support the instance type that we want to deploy
+
+```bash
+aws ec2 describe-instance-type-offerings --location-type availability-zone --filters Name=instance-type,Values=t3.micro --region us-east-1 --output table
+-------------------------------------------------------
+|            DescribeInstanceTypeOfferings            |
++-----------------------------------------------------+
+||               InstanceTypeOfferings               ||
+|+--------------+--------------+---------------------+|
+|| InstanceType |  Location    |    LocationType     ||
+|+--------------+--------------+---------------------+|
+||  t3.micro    |  us-east-1a  |  availability-zone  ||
+||  t3.micro    |  us-east-1d  |  availability-zone  ||
+||  t3.micro    |  us-east-1f  |  availability-zone  ||
+||  t3.micro    |  us-east-1c  |  availability-zone  ||
+||  t3.micro    |  us-east-1b  |  availability-zone  ||
+|+--------------+--------------+---------------------+|
+```
+
+```terraform
+data "aws_ec2_instance_type_offerings" "my_instance_types" {
+  for_each = toset(data.aws_availability_zones.my_azones.names)
+  filter {
+    name   = "instance-type"
+    values = ["t3.micro", "t3.small", "t3.medium"]
+  }
+
+  filter {
+    name   = "location"
+    values = [each.key]
+  }
+
+  location_type = "availability-zone"
+}
+
+output "output_instance_types" {
+  value = keys({ for az, types in data.aws_ec2_instance_type_offerings.my_instance_types : az => types.instance_types if length(types.instance_types) != 0 })
+}
+
+# Note out "us-east-1e" has been excluded
+output_instance_types_keys = [
+      + "us-east-1a",
+      + "us-east-1b",
+      + "us-east-1c",
+      + "us-east-1d",
+      + "us-east-1f",
+    ]
+```
