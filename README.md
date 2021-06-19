@@ -341,6 +341,7 @@ output "output_instance_types" {
   value = keys({ for az, types in data.aws_ec2_instance_type_offerings.my_instance_types : az => types.instance_types if length(types.instance_types) != 0 })
 }
 
+# Note out "us-east-1e" has been excluded
 output_instance_types_keys = [
       + "us-east-1a",
       + "us-east-1b",
