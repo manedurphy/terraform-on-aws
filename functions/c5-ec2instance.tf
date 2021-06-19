@@ -6,22 +6,38 @@ data "aws_availability_zones" "my_azones" {
   }
 }
 
-# EC2 Instance
-resource "aws_instance" "myec2vm" {
-  ami = data.aws_ami.amzlinux2.id
-  #   instance_type = var.instance_type
-  #   instance_type          = var.instance_type
-  #   instance_type = var.instance_type_list[1]  # For List
-  instance_type          = var.instance_type_map["dev"] # For Map
-  user_data              = file("${path.module}/app1-install.sh")
-  key_name               = var.instance_keypair
-  vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
-  for_each               = toset(data.aws_availability_zones.my_azones.names)
-  availability_zone      = each.key
-  tags = {
-    "Name" = "Count-Demo-${each.key}"
+# EC2 Instance Type Offerings
+data "aws_ec2_instance_type_offerings" "my_instance_types" {
+  for_each = toset(data.aws_availability_zones.my_azones.names)
+  filter {
+    name   = "instance-type"
+    values = ["t3.micro", "t3.small", "t3.medium"]
   }
+
+  filter {
+    name   = "location"
+    values = [each.key]
+  }
+
+  location_type = "availability-zone"
 }
+
+# EC2 Instance
+# resource "aws_instance" "myec2vm" {
+#   ami = data.aws_ami.amzlinux2.id
+#   instance_type = var.instance_type
+#   instance_type          = var.instance_type
+#   instance_type = var.instance_type_list[1]  # For List
+#   instance_type          = var.instance_type_map["dev"] # For Map
+#   user_data              = file("${path.module}/app1-install.sh")
+#   key_name               = var.instance_keypair
+#   vpc_security_group_ids = [aws_security_group.vpc-ssh.id, aws_security_group.vpc-web.id]
+#   for_each               = toset(data.aws_availability_zones.my_azones.names)
+#   availability_zone      = each.key
+#   tags = {
+#     "Name" = "Count-Demo-${each.key}"
+#   }
+# }
 
 /*
 # Drawbacks of using count in this example

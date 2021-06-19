@@ -234,18 +234,15 @@ resource "aws_instance" "my_ec2" {
 
 # Loops, Meta-Arguments, Splat Operator & Functions
 
-1. Loops
-    - We can loop through an output when using `count` as a meta-argument in our EC2 launch. We can loop through lists and maps.
-    - The splat operator allows us to use a `*` operator, allowing us to avoid writing the for loop manually
+-   We can loop through an output when using `count` as a meta-argument in our EC2 launch. We can loop through lists and maps.
+-   The splat operator allows us to use a `*` operator, allowing us to avoid writing the for loop manually
 
 ```terraform
 output "for_output_list" {
   description = "For Loop with List"
   value       = [for instance in aws_instance.myec2vm : instance.public_dns]
 }
-```
 
-```
 # For loop with list
 for_output_list = [
   "ec2-3-82-196-7.compute-1.amazonaws.com",
@@ -264,9 +261,7 @@ output "for_output_map1" {
 output "for_output_map2" {
   description = "For Loop with Map - Advanced"
   value       = { for c, instance in aws_instance.myec2vm : c => instance.public_dns }
-```
 
-```
 for_output_map1 = {
   "i-0489db1a84d7d754a" = "ec2-3-82-196-7.compute-1.amazonaws.com"
   "i-05d8dd821eaf1d567" = "ec2-3-83-45-236.compute-1.amazonaws.com"
@@ -285,9 +280,31 @@ output "latest_splat_instance_publicdns" {
 }
 ```
 
+-   As we loop through the availability zones, we need to tell it to exclude AZs that do not offer the instance type of choice
+
 ```
 latest_splat_instance_publicdns = [
   "ec2-3-82-196-7.compute-1.amazonaws.com",
   "ec2-3-83-45-236.compute-1.amazonaws.com",
 ]
+```
+
+```bash
+aws ec2 describe-instance-type-offerings --location-type availability-zone --filters Name=instance-type,Values=t3.micro --region us-east-1 --output table
+```
+
+```
+data "aws_ec2_instance_type_offerings" "example" {
+  filter {
+    name   = "instance-type"
+    values = ["t2.micro", "t3.micro"]
+  }
+
+  filter {
+    name   = "location"
+    values = ["usw2-az4"]
+  }
+
+  location_type = "availability-zone-id"
+}
 ```
