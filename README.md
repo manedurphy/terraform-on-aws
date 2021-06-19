@@ -245,6 +245,7 @@ output "for_output_list" {
 ```
 
 ```
+# For loop with list
 for_output_list = [
   "ec2-3-82-196-7.compute-1.amazonaws.com",
   "ec2-3-83-45-236.compute-1.amazonaws.com",
@@ -252,11 +253,13 @@ for_output_list = [
 ```
 
 ```terraform
+# For loop with map 1
 output "for_output_map1" {
   description = "For Loop with Map"
   value       = { for instance in aws_instance.myec2vm : instance.id => instance.public_dns }
 }
 
+# For loop with map 2
 output "for_output_map2" {
   description = "For Loop with Map - Advanced"
   value       = { for c, instance in aws_instance.myec2vm : c => instance.public_dns }
@@ -271,4 +274,19 @@ for_output_map2 = {
   "0" = "ec2-3-82-196-7.compute-1.amazonaws.com"
   "1" = "ec2-3-83-45-236.compute-1.amazonaws.com"
 }
+```
+
+```terraform
+# For loop with splat opertator
+output "latest_splat_instance_publicdns" {
+  description = "Generalized latest Splat Operator"
+  value       = aws_instance.myec2vm[*].public_dns
+}
+```
+
+```
+latest_splat_instance_publicdns = [
+  "ec2-3-82-196-7.compute-1.amazonaws.com",
+  "ec2-3-83-45-236.compute-1.amazonaws.com",
+]
 ```
