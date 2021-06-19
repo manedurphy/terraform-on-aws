@@ -186,3 +186,32 @@ aws_secret_access_key = Uxxxxx
 
 3. Resouce Block
     - Defines the infrastructure objects that will provision resources on the Cloud provider
+    - Resource behavior
+        - Create resources that exist in the configuration and are not associated with the current state
+        - Destroy resources that exists in state but not in configuration
+        - Update-in-place resources whose aruments have changed -> adding a tag
+        - Destroy and re-create resources whose arguments have changed but cannot be updated in place -> t2.micro to t3.small
+    - Argument references are the arguments whose values we input into the block
+    - Attribute refernces are outputs once resources are provisioned and can be referenced in other blocks
+
+```
+<BLOCK TYPE> "<RESOURCE TYPE>" "<RESOURCE LOCAL NAME>" {
+    <IDENTIFIER> = <EXPRESSION>
+}
+```
+
+```terraform
+resource "aws_instance" "my_ec2" {
+    provider = aws.aws-west-1 # This is a meta-argument, it changes the behavior of resources
+    ami = "ami-0742b4e673072066f" # These are regular Resource Arguments
+    instance_type = "t3.small"
+}
+```
+
+## Terraform State Basics
+
+-   Terraform state changes based on the resource behaviors described above
+-   It is simply a database for actions to be performed
+-   `terraform.tfstate` is created when using a local backend -> it references the default workspace
+-   We can configure an S3 bucket as our backend to store and share a common `terraform.tfstate` file for a team
+-   In summary, the system is just a diff between desired state and current state. If they are equal, no changes are made.
