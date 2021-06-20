@@ -362,3 +362,5 @@ output_instance_types_keys = [
 -   When working with modules, it is best to organize your files based on their categories, otherwise you may have a single file with 1500 lines of variables
     -   `vpc/v2-vpc-module-standardized` shows this separation of concerns
 -   When defining our variables, we may also want to consider using local variables for complex variabels, where we call a function
+
+# EC2 and Security Groups
