@@ -350,3 +350,15 @@ output_instance_types_keys = [
       + "us-east-1f",
     ]
 ```
+
+# 3-Tier VPC
+
+## Modules
+
+-   Modules are continers for multiple resources that are used together. It is just a collection of `.tf` files in a directory.
+-   The root module can call on other modules within its configuration, whether that be modules stored in a public or private registry, or locally as a child.
+-   For building a VPC on AWS, we can use the [terraform-aws-modules](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) safely because it is a `verififed module from an official Hashicorp partner`.
+-   We always need to consider which option is best for the task at hand, whether it is to use a public reusable module, the standard provider, or a custom module.
+-   When working with modules, it is best to organize your files based on their categories, otherwise you may have a single file with 1500 lines of variables
+    -   `vpc/v2-vpc-module-standardized` shows this separation of concerns
+-   When defining our variables, we may also want to consider using local variables for complex variabels, where we call a function
