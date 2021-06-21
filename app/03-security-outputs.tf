@@ -1,35 +1,30 @@
-# Bastion Security Group ID
-output "bastion_security_group_id" {
-  description = "Id for bastion host security group"
-  value       = module.bastion_host_sg.security_group_id
+# Bastion Security Group ID, VPC ID, and Name
+output "bastion_security_group_info" {
+  description = "ID, VPC ID, and name for bastion host"
+  value = {
+    id     = module.bastion_host_sg.security_group_id
+    vpc_id = module.bastion_host_sg.security_group_vpc_id
+    name   = module.bastion_host_sg.security_group_name
+  }
 }
 
-# Bastion Security Group VPC ID
-output "bastion_security_group_vpc_id" {
-  description = "Id for bastion host security group VPC ID"
-  value       = module.bastion_host_sg.security_group_vpc_id
+# Private Subnet Security Group ID, VPC ID, and Name
+output "private_subnet_security_group_info" {
+  description = "ID, VPC ID, and name for private subnet"
+  value = {
+    id     = module.private_sg.security_group_id
+    vpc_id = module.private_sg.security_group_vpc_id
+    name   = module.private_sg.security_group_name
+  }
 }
 
-# Bastion Security Group VPC Name
-output "bastion_security_group_name" {
-  description = "Id for bastion host security group VPC name"
-  value       = module.bastion_host_sg.security_group_name
+# Classic Loadbalancer Security Group ID, VPC ID, and Name
+output "classic_loadbalancer_security_group_info" {
+  description = "ID, VPC ID, and name for classic loadbalancer"
+  value = {
+    id     = module.loadbalancer_sg.security_group_id
+    vpc_id = module.loadbalancer_sg.security_group_vpc_id
+    name   = module.loadbalancer_sg.security_group_name
+  }
 }
 
-# Private Subnet Security Group ID
-output "private_security_group_id" {
-  description = "Id for bastion host security group"
-  value       = module.private_sg.security_group_id
-}
-
-# Private Security Group VPC ID
-output "private_group_vpc_id" {
-  description = "Id for bastion host security group VPC ID"
-  value       = module.private_sg.security_group_vpc_id
-}
-
-# Private Security Group VPC Name
-output "private_group_name" {
-  description = "Id for bastion host security group VPC name"
-  value       = module.private_sg.security_group_name
-}
