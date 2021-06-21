@@ -13,7 +13,7 @@ output "ec2_bastion_info" {
     instance_ids       = module.ec2_bastion.id
     availability_zones = module.ec2_bastion.availability_zone
     public_ips         = module.ec2_bastion.public_ip
-    eip = aws_eip.bastion_eip.public_ip
+    eip                = aws_eip.bastion_eip.public_ip
   }
 }
 

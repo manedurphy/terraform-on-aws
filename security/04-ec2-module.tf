@@ -17,8 +17,9 @@ module "ec2_bastion" {
 }
 
 module "ec2_private" {
-  source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "~> 2.0"
+  depends_on = [module.vpc]
+  source     = "terraform-aws-modules/ec2-instance/aws"
+  version    = "~> 2.0"
 
   name           = "${var.environment}-private"
   instance_count = var.private_instance_count
@@ -31,7 +32,6 @@ module "ec2_private" {
   vpc_security_group_ids = [module.private_sg.security_group_id]
   subnet_ids             = module.vpc.private_subnets
 
-  depends_on = [module.vpc]
   tags = {
     Environment = var.environment
     Type        = "Private"

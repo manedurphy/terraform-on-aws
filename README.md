@@ -359,8 +359,16 @@ output_instance_types_keys = [
 -   The root module can call on other modules within its configuration, whether that be modules stored in a public or private registry, or locally as a child.
 -   For building a VPC on AWS, we can use the [terraform-aws-modules](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) safely because it is a `verififed module from an official Hashicorp partner`.
 -   We always need to consider which option is best for the task at hand, whether it is to use a public reusable module, the standard provider, or a custom module.
--   When working with modules, it is best to organize your files based on their categories, otherwise you may have a single file with 1500 lines of variables
+-   When working with modules, it is best to organize your files based on their categories, otherwise you may have a single file with 1500 lines of variables.
     -   `vpc/v2-vpc-module-standardized` shows this separation of concerns
--   When defining our variables, we may also want to consider using local variables for complex variabels, where we call a function
+-   When defining our variables, we may also want to consider using local variables for complex variables, where we call a function.
 
-# EC2 and Security Groups
+# Null Resources & Provisioners
+
+-   `Provisioners` can be used to model specific actions on the local machine or on a remote machine in ordder to prepare servers or other infrastructure objects for service.
+    -   These should be used as a last resort. If the provider has what you need, then use it, otherwise you can use the `provisioner`.
+-   Terraform cannot model the actions of `provisioners`. This means you will not see this behavior reflected in `terraform plan`.
+-   The `connection` block provides the credentials needed to connect to an EC2
+-   The `file provisioner` allows us to copy files or directories into a targeted EC2 via SSH
+    -   Example copying private keys for connecting to EC2s in private subnets from bastion host
+-   The `remote-exec` invokes a script on a remote resource after it is create -> we should use `user-data` for this.
