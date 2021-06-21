@@ -372,3 +372,4 @@ output_instance_types_keys = [
 -   The `file provisioner` allows us to copy files or directories into a targeted EC2 via SSH
     -   Example copying private keys for connecting to EC2s in private subnets from bastion host
 -   The `remote-exec` invokes a script on a remote resource after it is create -> we should use `user-data` for this.
+-   The `local-exec` invokes a script on your local machine
